@@ -16,15 +16,3 @@ disqusShortname = "hugo-theme-stack"
 
 [pagination]
 pagerSize = 5
-
-languages:
-    en:
-        languageName: English
-        title: alankyle's blog
-        description: alan Example description
-        weight: 1
-    zh-cn:
-        languageName: 中文
-        title: alankyle's blog
-        description: 演示说明
-        weight: 2
