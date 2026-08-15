@@ -1,0 +1,306 @@
+media:
+  - name: post_images
+    label: 文章图片
+    input: static/images/posts
+    output: /images/posts
+    extensions: [jpg, jpeg, png, webp, gif]
+    rename: random
+
+content:
+  - name: posts
+    label: 文章
+    type: collection
+    path: content/post
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: "{year}-{month}-{day}-{title}.md"
+      field: create
+    operations:
+      create: true
+      rename: false
+      delete: false
+    view:
+      primary: title
+      fields: [title, date, draft]
+      sort: [date, title, draft]
+      search: [title, description, categories, tags]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: 标题
+        type: string
+        required: true
+        options:
+          maxlength: 160
+      - name: description
+        label: 摘要
+        type: text
+        default: ""
+        options:
+          maxlength: 500
+      - name: date
+        label: 发布时间
+        type: date
+        required: true
+        options:
+          time: true
+          format: "yyyy-MM-dd'T'HH:mm:ssxxx"
+      - name: slug
+        label: Slug
+        type: string
+        default: ""
+      - name: image
+        label: 封面图片
+        type: image
+        default: ""
+        options:
+          media: post_images
+      - name: categories
+        label: 分类
+        type: string
+        list: true
+        default: []
+      - name: tags
+        label: 标签
+        type: string
+        list: true
+        default: []
+      - name: draft
+        label: 草稿
+        type: boolean
+        required: true
+        default: true
+      - name: comments
+        label: 评论
+        type: boolean
+        required: true
+        default: true
+      - name: math
+        label: 数学公式
+        type: boolean
+        default: false
+      - name: hidden
+        label: 隐藏文章
+        type: boolean
+        required: true
+        default: false
+      - name: license
+        label: 文章许可
+        type: string
+        default: ""
+      - name: body
+        label: 正文
+        type: rich-text
+        default: ""
+        options:
+          format: markdown
+          switcher: true
+          media: post_images
+
+  - name: site_config
+    label: 网站基础设置
+    type: file
+    path: config/_default/config.toml
+    format: toml
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: baseurl
+        label: 网站地址
+        type: string
+        required: true
+      - name: defaultContentLanguage
+        label: 默认语言
+        type: string
+        required: true
+        readonly: true
+      - name: hasCJKLanguage
+        label: 中日韩语言优化
+        type: boolean
+        required: true
+      - name: pagination
+        label: 分页
+        type: object
+        required: true
+        fields:
+          - name: pagerSize
+            label: 每页文章数
+            type: number
+            required: true
+            options:
+              min: 1
+
+  - name: languages
+    label: 多语言标题
+    type: file
+    path: config/_default/languages.toml
+    format: toml
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: zh-cn
+        label: 简体中文
+        type: object
+        required: true
+        fields:
+          - name: languageName
+            label: 语言名称
+            type: string
+            required: true
+          - name: title
+            label: 网站标题
+            type: string
+            required: true
+      - name: en
+        label: English
+        type: object
+        required: true
+        fields:
+          - name: languageName
+            label: Language name
+            type: string
+            required: true
+          - name: title
+            label: Site title
+            type: string
+            required: true
+
+  - name: theme_settings
+    label: Stack 主题设置
+    type: file
+    path: config/_default/params.toml
+    format: toml
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: footer
+        label: 页脚
+        type: object
+        fields:
+          - name: since
+            label: 起始年份
+            type: number
+          - name: customText
+            label: 自定义文字
+            type: string
+      - name: sidebar
+        label: 侧栏
+        type: object
+        fields:
+          - name: subtitle
+            label: 副标题
+            type: string
+          - name: avatar
+            label: 头像
+            type: object
+            fields:
+              - name: enabled
+                label: 启用
+                type: boolean
+              - name: local
+                label: 本地图片
+                type: boolean
+              - name: src
+                label: 图片路径
+                type: string
+      - name: article
+        label: 文章显示
+        type: object
+        fields:
+          - name: readingTime
+            label: 显示阅读时间
+            type: boolean
+          - name: license
+            label: 默认许可
+            type: object
+            fields:
+              - name: enabled
+                label: 启用
+                type: boolean
+              - name: default
+                label: 许可文字
+                type: string
+      - name: colorScheme
+        label: 配色
+        type: object
+        fields:
+          - name: toggle
+            label: 允许切换
+            type: boolean
+          - name: default
+            label: 默认配色
+            type: select
+            options:
+              values: [auto, light, dark]
+      - name: comments
+        label: 评论
+        type: object
+        fields:
+          - name: enabled
+            label: 启用评论
+            type: boolean
+          - name: provider
+            label: 评论系统
+            type: string
+            readonly: true
+          - name: waline
+            label: Waline
+            type: object
+            fields:
+              - name: serverURL
+                label: 服务地址
+                type: string
+              - name: lang
+                label: 语言
+                type: string
+
+  - name: social_links
+    label: 社交链接
+    type: file
+    path: config/_default/menu.toml
+    format: toml
+    operations:
+      create: false
+      rename: false
+      delete: false
+    fields:
+      - name: social
+        label: 链接
+        type: object
+        list: true
+        fields:
+          - name: identifier
+            label: 标识
+            type: string
+            required: true
+          - name: name
+            label: 名称
+            type: string
+            required: true
+          - name: url
+            label: 地址
+            type: string
+            required: true
+          - name: params
+            label: 图标设置
+            type: object
+            fields:
+              - name: icon
+                label: 图标
+                type: string
+                required: true
+
+settings:
+  content:
+    merge: true
+  commit:
+    identity: app
