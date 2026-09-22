@@ -7,6 +7,9 @@ main() {
   HUGO_VERSION=0.153.1
   NODE_VERSION=24.12.0
 
+  # Ensure local directory exists
+  mkdir -p "${HOME}/.local"
+
   # Install Dart Sass
   echo "Installing Dart Sass ${DART_SASS_VERSION}..."
   curl -sLJO "https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz"
@@ -49,7 +52,12 @@ main() {
   echo "node: $(node --version)"
 
   echo "Building the site..."
-  hugo --gc --minify --baseURL "https://${VERCEL_PROJECT_PRODUCTION_URL}"
+  PRODUCTION_URL="${VERCEL_PROJECT_PRODUCTION_URL:-${VERCEL_URL:-}}"
+  if [ -n "${PRODUCTION_URL}" ]; then
+    hugo --gc --minify --baseURL "https://${PRODUCTION_URL}"
+  else
+    hugo --gc --minify
+  fi
 }
 
 main "$@"
